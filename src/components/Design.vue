@@ -1,0 +1,176 @@
+<template>
+  <b-card bg-variant="light" header="Design">
+    <drop @drop="drop">
+      <component :is="preview()" :owner="self"></component>
+    </drop>
+  </b-card>
+</template>
+
+<script>
+import { Drop } from "vue-drag-drop";
+import ObserveDomValue from "../mixins/ObserveDomValue";
+import Selector from "./Selector";
+
+export default {
+  components: { Drop },
+  mixins: [ObserveDomValue],
+  props: {
+    builder: {
+      type: Object,
+      required: true
+    },
+    value: null
+  },
+  data() {
+    return {
+      self: this,
+      selectedNode: null,
+      dragOverNode: null,
+      dragContent: null,
+      dropNodeId: null,
+      dropZone: null
+    };
+  },
+  methods: {
+    getDropNodeId() {
+      return this.dropNodeId;
+    },
+    setDropNodeId(id) {
+      this.dropNodeId = id;
+    },
+    getDragContent() {
+      return this.dragContent;
+    },
+    setDragContent(node) {
+      this.dragContent = node;
+    },
+    getDragOverNode() {
+      return this.dragOverNode;
+    },
+    setDragOverNode(node) {
+      this.dragOverNode = node;
+    },
+    getSelectedNode() {
+      return this.selectedNode;
+    },
+    setSelectedNode(node) {
+      this.selectedNode = node;
+    },
+    html() {
+      const div = this.value.ownerDocument.createElement("div");
+      const clone = this.value.cloneNode(true);
+      const nodes = this.builder.getAllNodes(clone);
+      nodes.forEach(node => {
+        const drop = this.value.ownerDocument.createElement("selector");
+        node.parentNode.insertBefore(drop, node);
+        drop.appendChild(node);
+        drop.setAttribute("v-bind:owner", "owner");
+        if (this.dragContent) {
+          let content = this.createDropZone(
+            this.dragContent,
+            node.getAttribute("builder-id"),
+            "before"
+          );
+          drop.parentNode.insertBefore(content, drop);
+          content = this.createDropZone(
+            this.dragContent,
+            node.getAttribute("builder-id"),
+            "after"
+          );
+          drop.parentNode.insertBefore(content, drop.nextSibling);
+          content = this.createDropZone(
+            this.dragContent,
+            node.getAttribute("builder-id"),
+            "inside"
+          );
+          node.appendChild(content);
+        }
+      });
+      div.appendChild(clone);
+      return div.innerHTML;
+    },
+    createDropZone(content, id, zone) {
+      const div = this.value.ownerDocument.createElement("div");
+      div.innerHTML = content;
+      div.firstElementChild.setAttribute(
+        "v-if",
+        `owner.dropNodeId=="${id}" && owner.dropZone=="${zone}"`
+      );
+      return div.firstElementChild;
+    },
+    testComponent(component) {
+      const Vue = this.$root.constructor;
+      const warnHandler = Vue.config.warnHandler;
+      const errorHandler = Vue.config.errorHandler;
+      try {
+        const errors = [];
+        Vue.config.warnHandler = err => {
+          errors.push(err);
+        };
+        Vue.config.errorHandler = err => {
+          errors.push(err);
+        };
+        // Test component
+        const TestComponent = Vue.component("designview", component);
+        const instance = new TestComponent({
+          propsData: {
+            owner: this
+          }
+        });
+        instance.$mount();
+        if (errors.length > 0) {
+          throw errors.join("\n");
+        }
+        Vue.config.warnHandler = warnHandler;
+        Vue.config.errorHandler = errorHandler;
+        return TestComponent;
+      } catch (e) {
+        Vue.config.warnHandler = warnHandler;
+        Vue.config.errorHandler = errorHandler;
+        throw e;
+      }
+    },
+    preview() {
+      try {
+        const component = {
+          components: { Selector },
+          props: {
+            owner: null
+          },
+          methods: {},
+          data() {
+            return {};
+          }
+        };
+        component.template = this.html();
+        // Test component
+        this.testComponent(component);
+        return component;
+      } catch (e) {
+        return {
+          template: '<h3 class="text-danger">' + e + "</h3>"
+        };
+      }
+    },
+    drop(component) {
+      if (!component.createElement) {
+        return;
+      }
+      if (this.dragOverNode) {
+        component.drop(this.builder.getNode(this.dragOverNode), this.dropZone);
+      } else {
+        component.drop(this.value, "inside");
+      }
+      this.setDragContent(null);
+      this.setDragOverNode(null);
+      this.setDropNodeId(null);
+    }
+  }
+};
+</script>
+
+<style>
+.selector-opacity {
+  opacity: 0.5;
+}
+</style>
