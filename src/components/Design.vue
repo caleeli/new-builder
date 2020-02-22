@@ -165,6 +165,11 @@ export default {
       this.setDragOverNode(null);
       this.setDropNodeId(null);
     }
+  },
+  watch: {
+    selectedNode(selectedNode) {
+      this.$emit("node-selected", this.builder.getNode(selectedNode));
+    }
   }
 };
 </script>

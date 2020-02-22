@@ -1,5 +1,5 @@
 <template>
-  <drag :transfer-data="data" @dragstart="dragstart">
+  <drag :transfer-data="data" @dragstart="dragstart" @dragend="dragend">
     <b-badge variant="light">
       <b-icon :icon="icon"></b-icon>
       {{ name }}
@@ -33,6 +33,9 @@ export default {
     };
   },
   methods: {
+    dragend() {
+      this.owner.builder.$refs.design.setDropNodeId(null);
+    },
     dragstart() {
       this.owner.builder.$refs.design.setDragContent(this.getPreview());
     },

@@ -23,6 +23,15 @@ export default {
   computed: {
     components() {
       return Object.keys(nodes);
+    },
+    definitions() {
+      const Vue = this.$root.constructor;
+      return this.components.map(name => {
+        const node = nodes[name];
+        const cmp = Vue.extend(node);
+        const ins = new cmp({props: {owner: this}});
+        return ins;
+      });
     }
   }
 };

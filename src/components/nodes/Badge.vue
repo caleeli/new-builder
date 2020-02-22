@@ -1,11 +1,12 @@
 <script>
 import BaseNode from "../BaseNode";
-import Html from "../Html";
+import Html from "../types/Html";
 
 export default {
   extends: BaseNode,
   data() {
     return {
+      tag: 'b-badge',
       name: "Badge",
       template: `<b-badge variant="primary">Primary</b-badge>`,
       preview: `<b-badge variant="primary">Primary</b-badge>`,

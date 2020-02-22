@@ -3,11 +3,11 @@
     <b-col cols="3" class="h-100">
       <components ref="components" class="h-100" :builder="self" />
     </b-col>
-    <b-col class="h-100">
-      <design ref="design" class="h-100" v-model="node" :builder="self" />
-    </b-col>
+    <b-col
+      class="h-100"
+    ><design ref="design" class="h-100" v-model="node" :builder="self" @node-selected="nodeSelected" /></b-col>
     <b-col cols="3" class="h-100">
-      <inspector ref="inspector" class="h-100" :builder="self" />
+      <inspector ref="inspector" class="h-100" :builder="self" :selected="selectedNode" />
     </b-col>
   </b-row>
 </template>
@@ -20,16 +20,17 @@ import { v4 as uuid } from "uuid";
 
 export default {
   components: { Components, Design, Inspector },
-  computed: {
-    self() {
-      return this;
-    }
-  },
   data() {
     const node = window.document.createElement("div");
     node.innerHTML = "hello world";
     return {
-      node
+      variables: [
+        'firstname',
+        'lastname'
+      ],
+      node,
+      selectedNode: null,
+      self: this
     };
   },
   methods: {
@@ -72,6 +73,12 @@ export default {
       const child = component.createElement(node);
       child.setAttribute("builder-id", uuid());
       node.appendChild(child);
+    },
+    getDefinitionOf(node) {
+      return this.$refs.components.definitions.find(def => def.tag === node.nodeName);
+    },
+    nodeSelected(selectedNode) {
+      this.selectedNode = selectedNode;
     }
   }
 };

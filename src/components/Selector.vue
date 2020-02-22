@@ -87,6 +87,7 @@ export default {
 <style>
 .selector {
   display: inline;
+  cursor: pointer;
 }
 .selector .selected > * {
   border: 1px dashed black;
