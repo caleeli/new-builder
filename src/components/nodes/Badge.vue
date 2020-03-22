@@ -6,7 +6,7 @@ export default {
   extends: BaseNode,
   data() {
     return {
-      tag: 'b-badge',
+      tag: 'B-BADGE',
       name: "Badge",
       template: `<b-badge variant="primary">Primary</b-badge>`,
       preview: `<b-badge variant="primary">Primary</b-badge>`,

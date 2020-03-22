@@ -1,5 +1,5 @@
 <template>
-  <b-card bg-variant="light" header="Design">
+  <b-card bg-variant="light" header="Design" class="rounded-0" header-class="p-0 text-center">
     <drop @drop="drop">
       <component :is="preview()" :owner="self"></component>
     </drop>
@@ -24,6 +24,7 @@ export default {
   data() {
     return {
       self: this,
+      draggingNodeId: null,
       selectedNode: null,
       dragOverNode: null,
       dragContent: null,
@@ -32,6 +33,12 @@ export default {
     };
   },
   methods: {
+    getDraggingNodeId() {
+      return this.draggingNodeId;
+    },
+    setDraggingNodeId(draggingNodeId) {
+      this.draggingNodeId = draggingNodeId;
+    },
     getDropNodeId() {
       return this.dropNodeId;
     },
@@ -65,6 +72,7 @@ export default {
         node.parentNode.insertBefore(drop, node);
         drop.appendChild(node);
         drop.setAttribute("v-bind:owner", "owner");
+        drop.setAttribute("v-bind:is-dragged", JSON.stringify(node.getAttribute("builder-id")) + "==owner.draggingNodeId");
         if (this.dragContent) {
           let content = this.createDropZone(
             this.dragContent,
@@ -153,7 +161,7 @@ export default {
       }
     },
     drop(component) {
-      if (!component.createElement) {
+      if (!component.drop) {
         return;
       }
       if (this.dragOverNode) {

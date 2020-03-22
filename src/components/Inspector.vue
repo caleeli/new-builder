@@ -1,5 +1,5 @@
 <template>
-  <b-card bg-variant="light" header="Inspector" body-class="p-0">
+  <b-card bg-variant="light" header="Inspector" body-class="p-0" class="rounded-0" header-class="p-0 text-center">
     <component
       v-for="node in properties"
       :is="node.component"

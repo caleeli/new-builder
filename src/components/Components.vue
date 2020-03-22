@@ -1,5 +1,5 @@
 <template>
-  <b-card bg-variant="light" header="Components" class="text-center">
+  <b-card bg-variant="light" header="Components" class="rounded-0" header-class="p-0 text-center" body-class="pt-1 pb-1">
     <component v-for="node in components" :is="node" :key="node" :owner="self" />
   </b-card>
 </template>

@@ -1,15 +1,15 @@
 <template>
-  <b-row class="h-100">
-    <b-col cols="3" class="h-100">
+  <div class="h-100 d-flex">
+    <div cols="2" class="h-100 p-0 p-components">
       <components ref="components" class="h-100" :builder="self" />
-    </b-col>
-    <b-col
-      class="h-100"
-    ><design ref="design" class="h-100" v-model="node" :builder="self" @node-selected="nodeSelected" /></b-col>
-    <b-col cols="3" class="h-100">
+    </div>
+    <div class="h-100 p-0 flex-fill">
+      <design ref="design" class="h-100" v-model="node" :builder="self" @node-selected="nodeSelected" />
+    </div>
+    <div cols="3" class="h-100 p-0 p-inspector">
       <inspector ref="inspector" class="h-100" :builder="self" :selected="selectedNode" />
-    </b-col>
-  </b-row>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -88,5 +88,11 @@ export default {
 <style scoped>
 .builder {
   height: 100%;
+}
+.p-components {
+  width: 15%;
+}
+.p-inspector {
+  width: 30%;
 }
 </style>

@@ -1,6 +1,6 @@
 <template>
-  <drag :transfer-data="data" @dragstart="dragstart" @dragend="dragend">
-    <b-badge variant="light">
+  <drag :transfer-data="data" @dragstart="dragstart" @dragend="dragend" class="component-selector">
+    <b-badge variant="light" class="border w-100">
       <b-icon :icon="icon"></b-icon>
       {{ name }}
     </b-badge>
@@ -68,5 +68,8 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
+  .component-selector {
+    cursor: pointer;
+  }
 </style>
