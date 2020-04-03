@@ -19,6 +19,7 @@ export default {
       node.appendChild(child);
     },
     dropAfter(child, node) {
+      console.log([child.innerHTML, node.innerHTML]);
       node.parentNode.insertBefore(child, node.nextSibling);
     }
   }

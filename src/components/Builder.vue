@@ -90,9 +90,9 @@ export default {
   height: 100%;
 }
 .p-components {
-  width: 15%;
+  min-width: 15%;
 }
 .p-inspector {
-  width: 30%;
+  min-width: 25%;
 }
 </style>

@@ -1,18 +1,18 @@
 export default {
+  data() {
+    return {
+      node: this.value,
+    };
+  },
   methods: {
     valueChanged() {
+      this.node = null;
+      this.node = this.value;
       this.$forceUpdate();
     },
   },
-  watch: {
-    value: {
-      handler() {
-        this.listenDomChanges(this.value);
-      },
-      inmediate: true
-    }
-  },
   mounted() {
+    this.node = this.value;
     if (!this.value) {
       return;
     }

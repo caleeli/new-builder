@@ -104,6 +104,10 @@ export default {
         "v-if",
         `owner.dropNodeId=="${id}" && owner.dropZone=="${zone}"`
       );
+      div.firstElementChild.setAttribute(
+        "class",
+        div.firstElementChild.getAttribute("class") + " drop-zone"
+      );
       return div.firstElementChild;
     },
     testComponent(component) {
@@ -156,7 +160,7 @@ export default {
         return component;
       } catch (e) {
         return {
-          template: '<h3 class="text-danger">' + e + "</h3>"
+          template: '<h4 class="text-danger">' + e + "</h4>"
         };
       }
     },
@@ -184,6 +188,10 @@ export default {
 
 <style>
 .selector-opacity {
+  opacity: 0.3;
+  border: 1px solid red;
+}
+.drop-zone {
   opacity: 0.5;
 }
 </style>

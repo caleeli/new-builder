@@ -61,7 +61,7 @@ export default {
         return component;
       } catch (e) {
         return {
-          template: '<h3 class="text-danger">' + e + "</h3>"
+          template: '<h4 class="text-danger">' + e + "</h4>"
         };
       }
     }

@@ -6,7 +6,7 @@
       :key="`property-${property.name}`"
       :owner="self"
       v-bind="property"
-      :node="selected"
+      v-model="selected"
     />
   </b-card>
 </template>

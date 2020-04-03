@@ -63,7 +63,9 @@ export default {
       this.owner.builder.$refs.design.setDropNodeId(null);
       this.owner.setDraggingNodeId(null);
     },
-    drag() {
+    drag(obj, evn) {
+      evn.stopPropagation();
+      console.log(this.element.innerHTML);
       this.owner.getDraggingNodeId() != this.elementId
         ? this.owner.setDraggingNodeId(this.elementId)
         : null;
