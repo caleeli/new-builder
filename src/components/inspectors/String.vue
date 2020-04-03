@@ -6,7 +6,7 @@
     label-cols="4"
     class="border-bottom m-0 p-1"
   >
-    <vue-bootstrap-typeahead
+    <b-input
       :id="`inspector-${name}`"
       v-model="local"
       size="sm"
@@ -14,16 +14,15 @@
       :placeholder="placeholder"
       :data="data"
       :minMatchingChars="1"
-    ></vue-bootstrap-typeahead>
+      ref="input"
+    ></b-input>
   </b-form-group>
 </template>
 
 <script>
-import VueBootstrapTypeahead from "vue-bootstrap-typeahead";
 import Type from "../../mixins/Type";
 
 export default {
-  components: { VueBootstrapTypeahead },
   mixins: [Type],
   props: {
     value: String,
@@ -43,6 +42,6 @@ export default {
           : this.autocomplete) || []
       );
     }
-  }
+  },
 };
 </script>

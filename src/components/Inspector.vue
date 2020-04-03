@@ -1,11 +1,12 @@
 <template>
   <b-card bg-variant="light" header="Inspector" body-class="p-0" class="rounded-0" header-class="p-0 text-center">
     <component
-      v-for="node in properties"
-      :is="node.component"
-      :key="`property-${node.name}`"
+      v-for="property in properties"
+      :is="property.component"
+      :key="`property-${property.name}`"
       :owner="self"
-      v-bind="node"
+      v-bind="property"
+      :node="selected"
     />
   </b-card>
 </template>
