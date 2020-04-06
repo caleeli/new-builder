@@ -65,20 +65,19 @@ export default {
     },
     drag(obj, evn) {
       evn.stopPropagation();
-      console.log(this.element.innerHTML);
       this.owner.getDraggingNodeId() != this.elementId
         ? this.owner.setDraggingNodeId(this.elementId)
         : null;
     },
-    dragstart() {
+    dragstart(a, event) {
+      event.stopPropagation();
       try  {
-      this.owner.setDragContent(this.getPreview());
+        this.owner.setDragContent(this.getPreview());
       } catch (e) {
-        console.log(e);
+        console.error(e);
       }
     },
     drop(target, zone) {
-      console.log("llego");
       this.owner.setDraggingNodeId(null);
       this[`drop${zone.replace(/\w/, a => a.toUpperCase())}`](this.element, target);
     },
