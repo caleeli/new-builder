@@ -13,11 +13,11 @@ export default {
       template: "<b-alert show>Default Alert</b-alert>",
       preview: `<div class="alert alert-info dragged">Default Alert</div>`,
       props: {
-        /*show: {
+        show: {
           type: Boolean,
           label: "Show",
           description: ""
-        },*/
+        },
         variant: {
           type: String,
           label: "Variant",
@@ -34,14 +34,14 @@ export default {
           label: "Dismissible label",
           description: ""
         },
-        "v-model": {
+        /*"v-model": {
           type: String,
           label: "Variable",
           description: "",
           autocomplete({builder}) {
             return builder.variables;
           }
-        },
+        },*/
         fade: {
           type: Boolean,
           label: "Fade",

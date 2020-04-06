@@ -120,7 +120,7 @@ export default {
     }
   },
   mounted() {
-    this.elementId = this.$refs.content.firstElementChild.getAttribute(
+    this.elementId = this.$refs.content.firstElementChild && this.$refs.content.firstElementChild.getAttribute(
       "builder-id"
     );
   }
