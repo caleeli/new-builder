@@ -63,9 +63,15 @@ export default {
       const isComputed = this.isComputed;
       this.node.removeAttribute(this.attributeName);
       if (isComputed) {
-        this.setAttributeByValue(this.name, value);
+        let parsed;
+        try {
+          parsed = JSON.parse(value);
+        } catch(e) {
+          parsed = value;
+        }
+        this.setAttributeByValue(this.name, parsed);
       } else {
-        this.node.setAttribute(':' + this.name, value);
+        this.node.setAttribute(':' + this.name, JSON.stringify(value));
       }
     }
   },
