@@ -13,11 +13,11 @@ export default {
       template: "<b-alert show>Default Alert</b-alert>",
       preview: `<div class="alert alert-info dragged">Default Alert</div>`,
       props: {
-        show: {
+        /*show: {
           type: Boolean,
           label: "Show",
           description: ""
-        },
+        },*/
         variant: {
           type: String,
           label: "Variant",
@@ -26,7 +26,7 @@ export default {
         },
         dismissible: {
           type: Boolean,
-          label: "Dsmissible",
+          label: "Dismissible",
           description: ""
         },
         "dismiss-label": {

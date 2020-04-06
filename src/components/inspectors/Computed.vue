@@ -1,9 +1,5 @@
 <template>
-  <div v-if="isComputed">
-    <slot name="computed"></slot>
-  </div>
   <b-form-group
-    v-else
     :label="label"
     :label-for="`inspector-${name}`"
     :description="description"
@@ -11,7 +7,7 @@
     class="border-bottom m-0 p-1"
     append="V"
   >
-    <b-input-group size="sm">
+    <b-input-group size="sm" prepend="=">
       <b-form-input
         :id="`inspector-${name}`"
         v-model="local"

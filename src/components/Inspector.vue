@@ -7,7 +7,15 @@
       :owner="self"
       v-bind="property"
       v-model="selected"
-    />
+    >
+      <template slot="computed">
+        <computed
+          :owner="self"
+          v-bind="property"
+          v-model="selected"
+        />
+      </template>
+    </component>
   </b-card>
 </template>
 

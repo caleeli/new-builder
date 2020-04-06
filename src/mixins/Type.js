@@ -16,14 +16,21 @@ export default {
     },
     label: String,
     description: String,
+    type: null,
   },
   computed: {
     local: {
       get() {
-        return this.node.getAttribute(this.attributeName);
+        if (this.isComputed) {
+          return this.node.getAttribute(this.attributeName);
+        }
+        return this.getAttributeByValue(this.attributeName);
       },
       set(value) {
-        this.node.setAttribute(this.attributeName, value);
+        if (this.isComputed) {
+          return this.node.setAttribute(this.attributeName, value);
+        }
+        this.setAttributeByValue(this.attributeName, value);
       },
     },
     attributeName() {
@@ -34,12 +41,29 @@ export default {
     }
   },
   methods: {
+    getAttributeByValue(attributeName) {
+      if (this.type === Boolean) {
+        return this.node.hasAttribute(attributeName);
+      }
+      return this.node.getAttribute(attributeName);
+    },
+    setAttributeByValue(attributeName, value) {
+      if (this.type === Boolean) {
+        if (value) {
+          this.node.setAttribute(attributeName, '');
+        } else {
+          this.node.removeAttribute(attributeName);
+        }
+        return;
+      }
+      this.node.setAttribute(attributeName, value);
+    },
     switchComputed() {
       const value = this.local;
       const isComputed = this.isComputed;
       this.node.removeAttribute(this.attributeName);
       if (isComputed) {
-        this.node.setAttribute(this.name, value);
+        this.setAttributeByValue(this.name, value);
       } else {
         this.node.setAttribute(':' + this.name, value);
       }
