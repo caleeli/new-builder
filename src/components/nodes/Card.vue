@@ -7,7 +7,7 @@ export default {
   data() {
     return {
       tag: "B-CARD",
-      icon: "card-text",
+      icon: "address-card",
       name: "Card",
       template: `<b-card :title='"Card Title"'></b-card>`,
       preview: `<div class="card"><div class="card-body"><h4 class="card-title">Card Title</h4>Content...</div></div>`,

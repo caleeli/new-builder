@@ -8,7 +8,7 @@ export default {
   data() {
     return {
       tag: "B-ALERT",
-      icon: "square",
+      icon: "bell",
       name: "Alert",
       template: "<b-alert show>Default Alert</b-alert>",
       preview: `<div class="alert alert-info dragged">Default Alert</div>`,

@@ -1,7 +1,7 @@
 <template>
   <drag :transfer-data="data" @dragstart="dragstart" @dragend="dragend" class="component-selector">
     <b-badge variant="light" class="border w-100">
-      <b-icon :icon="icon"></b-icon>
+      <font-awesome-icon :icon="icon" />
       {{ name }}
     </b-badge>
   </drag>

@@ -8,9 +8,17 @@ export default {
     return {
       tag: 'B-BADGE',
       name: "Badge",
+      icon: "tag",
       template: `<b-badge variant="primary">Primary</b-badge>`,
       preview: `<b-badge variant="primary">Primary</b-badge>`,
-      props: {},
+      props: {
+        variant: {
+          type: String,
+          label: "Variant",
+          description: "",
+          autocomplete: ["success", "primary", "danger", "warning", "info"]
+        },
+      },
       slots: {
         default: Html
       }
