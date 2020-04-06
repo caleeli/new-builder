@@ -15,8 +15,5 @@ import Type from "../../mixins/Type";
 
 export default {
   mixins: [Type],
-  props: {
-    value: Boolean
-  }
 };
 </script>
