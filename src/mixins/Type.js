@@ -7,6 +7,10 @@ export default {
       type: Object,
       required: true,
     },
+    builder: {
+      type: Object,
+      required: true,
+    },
     value: {
       required: true,
     },

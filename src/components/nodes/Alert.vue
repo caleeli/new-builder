@@ -20,6 +20,7 @@ export default {
         },
         variant: {
           type: String,
+          component: 'Variant',
           label: "Variant",
           description: "",
           autocomplete: ["success", "primary", "danger", "warning", "info"]
@@ -34,14 +35,6 @@ export default {
           label: "Dismissible label",
           description: ""
         },
-        /*"v-model": {
-          type: String,
-          label: "Variable",
-          description: "",
-          autocomplete({builder}) {
-            return builder.variables;
-          }
-        },*/
         fade: {
           type: Boolean,
           label: "Fade",

@@ -19,7 +19,11 @@ export default {
       type: Object,
       required: true
     },
-    value: null
+    value: null,
+    variables: {
+      type: Array,
+      required: true
+    },
   },
   data() {
     return {
@@ -144,6 +148,8 @@ export default {
     },
     preview() {
       try {
+        const variables = {};
+        this.variables.forEach(v => variables[v.name] = v.value);
         const component = {
           components: { Selector },
           props: {
@@ -151,7 +157,7 @@ export default {
           },
           methods: {},
           data() {
-            return {};
+            return variables;
           }
         };
         component.template = this.html();

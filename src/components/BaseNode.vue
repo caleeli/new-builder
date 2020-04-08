@@ -17,6 +17,10 @@ export default {
     owner: {
       type: Object,
       required: true
+    },
+    builder: {
+      type: Object,
+      required: true
     }
   },
   computed: {
@@ -33,6 +37,10 @@ export default {
     };
   },
   methods: {
+    oncreate(node, builder) {
+      node;
+      builder;
+    },
     dragend() {
       this.owner.builder.$refs.design.setDropNodeId(null);
     },
@@ -43,6 +51,7 @@ export default {
       const child = this.createElement(node);
       child.setAttribute("builder-id", uuid());
       this[`drop${zone.replace(/\w/, a => a.toUpperCase())}`](child, node);
+      this.oncreate(child, this.builder);
     },
     dropBefore(child, node) {
       node.parentNode.insertBefore(child, node);
@@ -62,6 +71,9 @@ export default {
     createElement(node) {
       const div = node.ownerDocument.createElement("div");
       div.innerHTML = this.getTemplate();
+      div.firstChild.querySelectorAll('[builder-id]').forEach(element => {
+        element.setAttribute('builder-id', uuid());
+      });
       return div.firstChild;
     }
   }

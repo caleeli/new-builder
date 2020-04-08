@@ -5,12 +5,14 @@
       :is="property.component"
       :key="`property-${property.name}`"
       :owner="self"
+      :builder="builder"
       v-bind="property"
       v-model="selected"
     >
       <template slot="computed">
         <computed
           :owner="self"
+          :builder="builder"
           v-bind="property"
           v-model="selected"
         />
@@ -57,7 +59,7 @@ export default {
           return {
             name,
             label: name,
-            component: def.type.name,
+            component: def.component || def.type.name,
             ...def
           };
         });

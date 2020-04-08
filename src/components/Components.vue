@@ -1,6 +1,6 @@
 <template>
   <b-card bg-variant="light" header="Components" class="rounded-0" header-class="p-0 text-center" body-class="pt-1 pb-1">
-    <component v-for="node in components" :is="node" :key="node" :owner="self" />
+    <component v-for="node in components" :is="node" :key="node" :owner="self" :builder="builder" />
   </b-card>
 </template>
 
@@ -29,7 +29,7 @@ export default {
       return this.components.map(name => {
         const node = nodes[name];
         const cmp = Vue.extend(node);
-        const ins = new cmp({props: {owner: this}});
+        const ins = new cmp({props: {owner: this, builder: this.builder}});
         return ins;
       });
     }

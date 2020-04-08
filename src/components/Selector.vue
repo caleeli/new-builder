@@ -89,7 +89,7 @@ export default {
     },
     dragover(data, event) {
       event.cancelBubble = true;
-      const target = event.toElement || event.originalTarget;
+      const target = event.target || event.toElement || event.originalTarget;
       const owner = this.owner.builder.getOwnerNode(target);
       const node = this.$refs.content.firstElementChild;
       if (!owner) {
@@ -150,8 +150,8 @@ export default {
 
 <style>
 .selector .selected > * {
-  -webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
-  -moz-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
-  box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
+  -webkit-box-shadow: 5px 5px 5px 0px rgba(0,0,0,0.75);
+  -moz-box-shadow: 5px 5px 5px 0px rgba(0,0,0,0.75);
+  box-shadow: 5px 5px 5px 0px rgba(0,0,0,0.75);
 }
 </style>
