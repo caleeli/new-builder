@@ -90,18 +90,39 @@ export default {
             "after"
           );
           drop.parentNode.insertBefore(content, drop.nextSibling);
-          content = this.createDropZone(
-            this.dragContent,
-            node.getAttribute("builder-id"),
-            "inside"
-          );
-          node.appendChild(content);
+          // slots
+          const definition = this.builder.getDefinitionOf(node);
+          if (definition.slots instanceof Array) {
+            definition.slots.forEach(slot => this.createSlotDropZone(node, slot));
+          }
         }
       });
       div.appendChild(clone);
       return div.innerHTML;
     },
-    createDropZone(content, id, zone) {
+    createSlotDropZone(node, slot = 'default') {
+      if (slot === 'default') {
+        const content = this.createDropZone(
+          this.dragContent,
+          node.getAttribute("builder-id"),
+          "inside"
+        );
+        node.appendChild(content);
+      } else {
+        const id = node.getAttribute("builder-id");
+        const zone = `slot:${slot}`;
+        const content = this.createDropZone(this.dragContent, id, zone, true);
+        const slotNode = this.value.ownerDocument.createElement("template");
+        slotNode.setAttribute(
+          "v-if",
+          `owner.dropNodeId=="${id}" && owner.dropZone=="${zone}"`
+        );
+        slotNode.setAttribute("v-slot:" + slot, "");
+        slotNode.innerHTML = content;
+        node.appendChild(slotNode);
+      }
+    },
+    createDropZone(content, id, zone, asString = false) {
       const div = this.value.ownerDocument.createElement("div");
       div.innerHTML = content;
       div.firstElementChild.setAttribute(
@@ -112,7 +133,7 @@ export default {
         "class",
         div.firstElementChild.getAttribute("class") + " drop-zone"
       );
-      return div.firstElementChild;
+      return asString ? div.innerHTML : div.firstElementChild;
     },
     testComponent(component) {
       const Vue = this.$root.constructor;
@@ -199,5 +220,19 @@ export default {
 }
 .drop-zone {
   opacity: 0.5;
+  animation-name: fadeIn;
+  animation-duration: 1s;
+  animation-iteration-count: infinite;
+}
+@keyframes fadeIn {
+  0% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 0.3;
+  }
 }
 </style>

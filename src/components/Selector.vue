@@ -65,17 +65,17 @@ export default {
     },
     drag(obj, evn) {
       evn.stopPropagation();
+      try  {
+        this.owner.setDragContent(this.getPreview());
+      } catch (e) {
+        console.error(e);
+      }
       this.owner.getDraggingNodeId() != this.elementId
         ? this.owner.setDraggingNodeId(this.elementId)
         : null;
     },
     dragstart(a, event) {
       event.stopPropagation();
-      try  {
-        this.owner.setDragContent(this.getPreview());
-      } catch (e) {
-        console.error(e);
-      }
     },
     drop(target, zone) {
       this.owner.setDraggingNodeId(null);

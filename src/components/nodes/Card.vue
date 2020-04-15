@@ -1,6 +1,5 @@
 <script>
 import BaseNode from "../BaseNode";
-import Html from "../types/Html";
 
 export default {
   extends: BaseNode,
@@ -18,10 +17,11 @@ export default {
           description: ""
         },
       },
-      slots: {
-        default: Html,
-        dismiss: Html
-      }
+      slots: [
+        'header',
+        'default',
+        'footer'
+      ]
     };
   }
 };
