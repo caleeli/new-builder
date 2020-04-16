@@ -110,7 +110,7 @@ export default {
         node.appendChild(content);
       } else {
         const id = node.getAttribute("builder-id");
-        const zone = `slot:${slot}`;
+        const zone = 'inside';//`slot:${slot}`;
         const content = this.createDropZone(this.dragContent, id, zone, true);
         const slotNode = this.value.ownerDocument.createElement("template");
         slotNode.setAttribute(

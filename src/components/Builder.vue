@@ -55,11 +55,11 @@ export default {
       }
       return all;
     },
-    getOwnerNode(node) {
+    getOwnerNode(node, excludeId = '') {
       let owner = node;
       while (
         owner &&
-        !(owner.getAttribute ? owner.getAttribute("builder-id") : null)
+        !((owner.getAttribute ? owner.getAttribute("builder-id") : null) &&  owner.getAttribute("builder-id") != excludeId)
       ) {
         owner = owner.parentNode;
       }

@@ -88,9 +88,8 @@ export default {
       this.owner.setSelectedNode(this.elementId);
     },
     dragover(data, event) {
-      event.cancelBubble = true;
       const target = event.target || event.toElement || event.originalTarget;
-      const owner = this.owner.builder.getOwnerNode(target);
+      const owner = this.owner.builder.getOwnerNode(target, this.owner.draggingNodeId);
       const node = this.$refs.content.firstElementChild;
       if (!owner) {
         return;
@@ -102,15 +101,15 @@ export default {
       }
       this.owner.dropNodeId = this.elementId;
       const ownerOffset = jquery(node).offset();
-      const targetOffset = jquery(target).offset();
+      const targetOffset = jquery(owner).offset();
       const x = event.offsetX + targetOffset.left - ownerOffset.left;
       const y = event.offsetY + targetOffset.top - ownerOffset.top;
       const pos = {
-        x: x / owner.offsetWidth,
-        y: y / owner.offsetHeight
+        x: x,// / owner.offsetWidth,
+        y: y,// / owner.offsetHeight
       };
-      this.isBefore = pos.y < 0.2;
-      this.isAfter = pos.y > 0.8;
+      this.isBefore = pos.y < 16;
+      this.isAfter = pos.y > (owner.offsetHeight - 16);
       this.owner.dropZone = "inside";
       this.isBefore ? (this.owner.dropZone = "before") : null;
       this.isAfter ? (this.owner.dropZone = "after") : null;
