@@ -1,25 +1,26 @@
 <template>
-  <b-card bg-variant="light" header="Design" class="rounded-0" header-class="p-0 text-center">
-    <drop @drop="drop">
-      <component :is="preview()" :owner="self"></component>
-    </drop>
+  <b-card bg-variant="light" :header="`Design`" class="rounded-0" header-class="p-0 text-center">
+    <drop-zone :node="node" zone="inside" :design="self" :builder="builder">
+      <component :is="component()" :design="self" :builder="builder"></component>
+    </drop-zone>
   </b-card>
 </template>
 
 <script>
-import { Drop } from "vue-drag-drop";
 import ObserveDomValue from "../mixins/ObserveDomValue";
-import Selector from "./Selector";
+import NodeTools from "../mixins/NodeTools";
+import DragZone from "./DragZone";
+import DropZone from "./DropZone";
 
 export default {
-  components: { Drop },
-  mixins: [ObserveDomValue],
+  components: { DropZone },
+  mixins: [ ObserveDomValue, NodeTools ],
   props: {
+    value: null,
     builder: {
       type: Object,
       required: true
     },
-    value: null,
     variables: {
       type: Array,
       required: true
@@ -28,114 +29,60 @@ export default {
   data() {
     return {
       self: this,
-      draggingNodeId: null,
-      selectedNode: null,
-      dragOverNode: null,
       dragContent: null,
-      dropNodeId: null,
-      dropZone: null
+      dragOver: null,
+      draggedNode: null,
     };
   },
   methods: {
-    getDraggingNodeId() {
-      return this.draggingNodeId;
-    },
-    setDraggingNodeId(draggingNodeId) {
-      this.draggingNodeId = draggingNodeId;
-    },
-    getDropNodeId() {
-      return this.dropNodeId;
-    },
-    setDropNodeId(id) {
-      this.dropNodeId = id;
-    },
     getDragContent() {
       return this.dragContent;
     },
     setDragContent(node) {
       this.dragContent = node;
     },
-    getDragOverNode() {
-      return this.dragOverNode;
+    setDropNodeId(id) {
+      this.dropNodeId = id;
     },
-    setDragOverNode(node) {
-      this.dragOverNode = node;
-    },
-    getSelectedNode() {
-      return this.selectedNode;
-    },
-    setSelectedNode(node) {
-      this.selectedNode = node;
-    },
-    html() {
-      const div = this.value.ownerDocument.createElement("div");
-      const clone = this.value.cloneNode(true);
-      const nodes = this.builder.getAllNodes(clone);
-      nodes.forEach(node => {
-        const drop = this.value.ownerDocument.createElement("selector");
-        node.parentNode.insertBefore(drop, node);
-        drop.appendChild(node);
-        drop.setAttribute("v-bind:owner", "owner");
-        drop.setAttribute("v-bind:is-dragged", JSON.stringify(node.getAttribute("builder-id")) + "==owner.draggingNodeId");
-        if (this.dragContent) {
-          let content = this.createDropZone(
-            this.dragContent,
-            node.getAttribute("builder-id"),
-            "before"
-          );
-          drop.parentNode.insertBefore(content, drop);
-          content = this.createDropZone(
-            this.dragContent,
-            node.getAttribute("builder-id"),
-            "after"
-          );
-          drop.parentNode.insertBefore(content, drop.nextSibling);
-          // slots
-          const definition = this.builder.getDefinitionOf(node);
-          if (definition.slots instanceof Array) {
-            definition.slots.forEach(slot => this.createSlotDropZone(node, slot));
+    ////
+    componentDefinition() {
+      try {
+        const variables = {};
+        this.variables.forEach(v => variables[v.name] = v.value);
+        const component = {
+          components: { DragZone, DropZone },
+          props: {
+            design: {
+              type: null,
+              required: true,
+            },
+            builder: {
+              type: null,
+              required: true,
+            },
+          },
+          methods: {
+            node(id) {
+              return this.builder.getNode(id);
+            },
+            definition(id) {
+              return this.builder.getDefinitionOf(this.builder.getNode(id));
+            },
+          },
+          data() {
+            return variables;
           }
-        }
-      });
-      div.appendChild(clone);
-      return div.innerHTML;
-    },
-    createSlotDropZone(node, slot = 'default') {
-      if (slot === 'default') {
-        const content = this.createDropZone(
-          this.dragContent,
-          node.getAttribute("builder-id"),
-          "inside"
-        );
-        node.appendChild(content);
-      } else {
-        const id = node.getAttribute("builder-id");
-        const zone = 'inside';//`slot:${slot}`;
-        const content = this.createDropZone(this.dragContent, id, zone, true);
-        const slotNode = this.value.ownerDocument.createElement("template");
-        slotNode.setAttribute(
-          "v-if",
-          `owner.dropNodeId=="${id}" && owner.dropZone=="${zone}"`
-        );
-        slotNode.setAttribute("v-slot:" + slot, "");
-        slotNode.innerHTML = content;
-        node.appendChild(slotNode);
+        };
+        component.template = this.template();
+        return component;
+      } catch (e) {
+        return {
+          template: '<h4 class="text-danger">' + e + "</h4>"
+        };
       }
     },
-    createDropZone(content, id, zone, asString = false) {
-      const div = this.value.ownerDocument.createElement("div");
-      div.innerHTML = content;
-      div.firstElementChild.setAttribute(
-        "v-if",
-        `owner.dropNodeId=="${id}" && owner.dropZone=="${zone}"`
-      );
-      div.firstElementChild.setAttribute(
-        "class",
-        div.firstElementChild.getAttribute("class") + " drop-zone"
-      );
-      return asString ? div.innerHTML : div.firstElementChild;
-    },
-    testComponent(component) {
+    component() {
+      const component = this.componentDefinition();
       const Vue = this.$root.constructor;
       const warnHandler = Vue.config.warnHandler;
       const errorHandler = Vue.config.errorHandler;
@@ -147,11 +94,11 @@ export default {
         Vue.config.errorHandler = err => {
           errors.push(err);
         };
-        // Test component
-        const TestComponent = Vue.component("designview", component);
-        const instance = new TestComponent({
+        const VueComponent = Vue.component("designview", component);
+        const instance = new VueComponent({
           propsData: {
-            owner: this
+            design: this,
+            builder: this.builder,
           }
         });
         instance.$mount();
@@ -160,79 +107,85 @@ export default {
         }
         Vue.config.warnHandler = warnHandler;
         Vue.config.errorHandler = errorHandler;
-        return TestComponent;
+        return VueComponent;
       } catch (e) {
         Vue.config.warnHandler = warnHandler;
         Vue.config.errorHandler = errorHandler;
         throw e;
+        //return {
+        //  template: '<h4 class="text-danger">' + e + "</h4>",
+        //};
       }
     },
-    preview() {
-      try {
-        const variables = {};
-        this.variables.forEach(v => variables[v.name] = v.value);
-        const component = {
-          components: { Selector },
-          props: {
-            owner: null
-          },
-          methods: {},
-          data() {
-            return variables;
-          }
-        };
-        component.template = this.html();
-        // Test component
-        this.testComponent(component);
-        return component;
-      } catch (e) {
-        return {
-          template: '<h4 class="text-danger">' + e + "</h4>"
-        };
-      }
+    replaceTag(node, from, to) {
+      node.getElementsByTagName(from).forEach(e => {
+        const attributes = {};
+        e.attributes.forEach(a => attributes[a.nodeName] = a.nodeValue || '');
+        const c = this.createElement(to, attributes);
+        c.innerHTML = e.innerHTML;
+        e.parentNode.insertBefore(c, e);
+        e.parentNode.removeChild(e);
+      });
+      return node;
     },
-    drop(component) {
-      if (!component.drop) {
-        return;
+    template() {
+      const clone = this.node.cloneNode(true);
+      const nodes = this.builder.getAllNodes(clone);
+      nodes.forEach(node => this.encapsulate(node));
+      const div = this.createElement("div");
+      div.appendChild(clone);
+      const res = this.replaceTag(div, 'templatee', 'template').innerHTML;
+      return res;
+    },
+    createElement(nodeName, attributes = {}) {
+      const node = this.value.ownerDocument.createElement(nodeName);
+      for(let name in attributes) {
+        node.setAttribute(name, attributes[name]);
       }
-      if (this.dragOverNode) {
-        component.drop(this.builder.getNode(this.dragOverNode), this.dropZone);
-      } else {
-        component.drop(this.value, "inside");
+      return node;
+    },
+    append(node, child) {
+      node.parentNode.insertBefore(child, node.nextSibling);
+    },
+    dropZone(node, zone, slot = '') {
+      return this.createDragDropZone('drop-zone', node, {
+        'v-if': 'design.dragContent',
+        zone,
+        'slot-name': slot
+      });
+    },
+    createDragDropZone(type, node, config) {
+      return this.createElement(type, {
+        'v-bind:node': `node(${JSON.stringify(node.getAttribute('builder-id'))})`,
+        'v-bind:design': 'design',
+        'v-bind:builder': 'builder',
+        ...config
+      });
+    },
+    encapsulate(node) {
+      const definition = this.builder.getDefinitionOf(node);
+      this.prepend(node, this.dropZone(node, 'before'));
+      if (definition.slots instanceof Array) {
+        definition.slots.forEach(slot => this.slotZone(node, slot));
       }
-      this.setDragContent(null);
-      this.setDragOverNode(null);
-      this.setDropNodeId(null);
-    }
+      this.append(node, this.dropZone(node, 'after'));
+      const dragZone = this.createDragDropZone('drag-zone', node, {
+        'v-bind:definition': `definition(${JSON.stringify(node.getAttribute('builder-id'))})`,
+      });
+      node.parentNode.insertBefore(dragZone, node);
+      dragZone.appendChild(node);
+    },
+    prepend(node, child) {
+      node.parentNode.insertBefore(child, node);
+    },
+    slotZone(node, slotName) {
+      const slot = slotName === 'default' ? node : this.getOrCreateSlot(node, slotName);
+      this.appendChild(slot, this.dropZone(node, 'inside', slotName));
+    },
   },
-  watch: {
-    selectedNode(selectedNode) {
-      this.$emit("node-selected", this.builder.getNode(selectedNode));
-    }
-  }
-};
+}
 </script>
 
 <style>
-.selector-opacity {
-  opacity: 0.3;
-  border: 1px solid red;
-}
-.drop-zone {
-  opacity: 0.5;
-  animation-name: fadeIn;
-  animation-duration: 1s;
-  animation-iteration-count: infinite;
-}
-@keyframes fadeIn {
-  0% {
-    opacity: 0.3;
-  }
-  50% {
-    opacity: 0.5;
-  }
-  100% {
-    opacity: 0.3;
-  }
-}
+
 </style>

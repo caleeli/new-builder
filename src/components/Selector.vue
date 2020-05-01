@@ -79,7 +79,8 @@ export default {
     },
     drop(target, zone) {
       this.owner.setDraggingNodeId(null);
-      this[`drop${zone.replace(/\w/, a => a.toUpperCase())}`](this.element, target);
+      console.log(this.owner.dropSlot);
+      this[`drop${zone.replace(/\w/, a => a.toUpperCase())}`](this.element, target, this.owner.dropSlot);
     },
     getPreview() {
       return this.owner.builder.getDefinitionOf(this.element).getPreview();
@@ -90,6 +91,9 @@ export default {
     dragover(data, event) {
       const target = event.target || event.toElement || event.originalTarget;
       const owner = this.owner.builder.getOwnerNode(target, this.owner.draggingNodeId);
+      const dropZone = this.owner.builder.getOwnerNode(target, '', 'drop-builder-id');
+      const zone = (dropZone && dropZone.getAttribute('drop-zone')) || 'inside';
+      const slot = (dropZone && dropZone.getAttribute('drop-slot')) || 'default';
       const node = this.$refs.content.firstElementChild;
       if (!owner) {
         return;
@@ -104,19 +108,18 @@ export default {
       const targetOffset = jquery(owner).offset();
       const x = event.offsetX + targetOffset.left - ownerOffset.left;
       const y = event.offsetY + targetOffset.top - ownerOffset.top;
-      const pos = {
-        x: x,// / owner.offsetWidth,
-        y: y,// / owner.offsetHeight
-      };
+      const pos = { x, y };
       this.isBefore = pos.y < 16;
       this.isAfter = pos.y > (owner.offsetHeight - 16);
       this.owner.dropZone = "inside";
       this.isBefore ? (this.owner.dropZone = "before") : null;
       this.isAfter ? (this.owner.dropZone = "after") : null;
+      console.log(`${zone}.${slot}`, dropZone || target);
+      this.owner.dropSlot = slot;
       if (this.owner.getDragOverNode() !== this.elementId) {
         this.owner.setDragOverNode(this.elementId);
       }
-    }
+    },
   },
   mounted() {
     this.elementId = this.$refs.content.firstElementChild && this.$refs.content.firstElementChild.getAttribute(
@@ -152,5 +155,8 @@ export default {
   -webkit-box-shadow: 5px 5px 5px 0px rgba(0,0,0,0.75);
   -moz-box-shadow: 5px 5px 5px 0px rgba(0,0,0,0.75);
   box-shadow: 5px 5px 5px 0px rgba(0,0,0,0.75);
+}
+.dragover {
+  border: 1px solid red;
 }
 </style>

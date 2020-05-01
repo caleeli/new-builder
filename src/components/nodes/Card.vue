@@ -18,7 +18,7 @@ export default {
         },
       },
       slots: [
-        //'header',
+        'header',
         'default',
         //'footer'
       ]

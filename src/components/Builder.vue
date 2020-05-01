@@ -55,15 +55,15 @@ export default {
       }
       return all;
     },
-    getOwnerNode(node, excludeId = '') {
+    getOwnerNode(node, excludeId = '', builderId = "builder-id") {
       let owner = node;
       while (
         owner &&
-        !((owner.getAttribute ? owner.getAttribute("builder-id") : null) &&  owner.getAttribute("builder-id") != excludeId)
+        !((owner.getAttribute ? owner.getAttribute(builderId) : null) &&  owner.getAttribute(builderId) != excludeId)
       ) {
         owner = owner.parentNode;
       }
-      return owner; //id ? this.getNode(id) : this.node;
+      return owner;
     },
     addVariable(name, value) {
       if (!this.variables.find(v => v.name === name)) {

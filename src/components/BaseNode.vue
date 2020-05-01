@@ -10,9 +10,11 @@
 <script>
 import { Drag } from "vue-drag-drop";
 import { v4 as uuid } from "uuid";
+import NodeTools from "../mixins/NodeTools";
 
 export default {
   components: { Drag },
+  mixins: [ NodeTools ],
   props: {
     owner: {
       type: Object,
@@ -24,6 +26,9 @@ export default {
     }
   },
   computed: {
+    design() {
+      return this.builder.$refs.design;
+    },
     data() {
       return this;
     }
@@ -42,25 +47,15 @@ export default {
       builder;
     },
     dragend() {
-      this.owner.builder.$refs.design.setDropNodeId(null);
+      this.design.setDropNodeId(null);
     },
     dragstart() {
-      this.owner.builder.$refs.design.setDragContent(this.getPreview());
+      this.design.setDragContent(this.getPreview());
     },
-    drop(node, zone) {
-      const child = this.createElement(node);
-      child.setAttribute("builder-id", uuid());
-      this[`drop${zone.replace(/\w/, a => a.toUpperCase())}`](child, node);
+    dropMe(node, zone, slot) {
+      const child = this.createNewNodeInstance(node);
+      this.dropIn(child, node, zone, slot);
       this.oncreate(child, this.builder);
-    },
-    dropBefore(child, node) {
-      node.parentNode.insertBefore(child, node);
-    },
-    dropInside(child, node) {
-      node.appendChild(child);
-    },
-    dropAfter(child, node) {
-      node.parentNode.insertBefore(child, node.nextSibling);
     },
     getTemplate() {
       return this.template;
@@ -68,12 +63,13 @@ export default {
     getPreview() {
       return this.preview;
     },
-    createElement(node) {
+    createNewNodeInstance(node) {
       const div = node.ownerDocument.createElement("div");
       div.innerHTML = this.getTemplate();
       div.firstChild.querySelectorAll('[builder-id]').forEach(element => {
         element.setAttribute('builder-id', uuid());
       });
+      div.firstChild.setAttribute("builder-id", uuid());
       return div.firstChild;
     }
   }
