@@ -118,14 +118,18 @@ export default {
       }
     },
     replaceTag(node, from, to) {
-      node.getElementsByTagName(from).forEach(e => {
-        const attributes = {};
-        e.attributes.forEach(a => attributes[a.nodeName] = a.nodeValue || '');
-        const c = this.createElement(to, attributes);
-        c.innerHTML = e.innerHTML;
-        e.parentNode.insertBefore(c, e);
-        e.parentNode.removeChild(e);
-      });
+      let nodes = node.getElementsByTagName(from);
+      while(nodes.length) {
+        nodes.forEach(e => {
+          const attributes = {};
+          e.attributes.forEach(a => attributes[a.nodeName] = a.nodeValue || '');
+          const c = this.createElement(to, attributes);
+          c.innerHTML = e.innerHTML;
+          e.parentNode.insertBefore(c, e);
+          e.parentNode.removeChild(e);
+        });
+        nodes = node.getElementsByTagName(from);
+      }
       return node;
     },
     template() {
