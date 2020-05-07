@@ -1,17 +1,21 @@
 <template>
-  <drop v-if="!nodeIsDragged && !alreadyInZone"
+  <drop v-show="!nodeIsDragged && !alreadyInZone"
     @dragover="dragover"
     @drop="drop"
     @dragleave="dragleave"
   >
     <slot></slot>
-    <span :class="{ isHovered }" class="drop-zone" v-html="html()"></span>
+    <span :class="{ isHovered, notNear, isNear }" class="drop-zone" v-html="html()" :zone="zone"></span>
   </drop>
 </template>
 
 <script>
 import NodeTools from '../mixins/NodeTools';
+import debounce from 'debounce';
 
+const setNearZone = debounce((design, zone) => {
+  design.nearZone = zone;
+}, 13);
 export default {
   mixins: [ NodeTools ],
   props: {
@@ -36,6 +40,12 @@ export default {
     },
   },
   computed: {
+    isNear() {
+      return this.design.nearZone && (this.design.nearZone.id === this.getId());
+    },
+    notNear() {
+      return !this.design.nearZone || (this.design.nearZone.id !== this.getId());
+    },
     alreadyInZone() {
       if (!this.design.draggedNode) {
         return false;
@@ -52,6 +62,12 @@ export default {
     },
   },
   methods: {
+    getId() {
+      return `${this.node.getAttribute('builder-id')}-${this.zone}-${this.slotName}`;
+    },
+    click() {
+      this.design.selectedNode = this.node;
+    },
     isInside(node, slotName) {
       let found;
       const slot = slotName === 'default' ? this.node : this.getSlot(this.node, slotName);
@@ -63,9 +79,33 @@ export default {
     html() {
       return this.design.dragContent;
     },
+    getPosition(el) {
+      var _x = 0;
+      var _y = 0;
+      while( el && !isNaN( el.offsetLeft ) && !isNaN( el.offsetTop ) ) {
+        _x += el.offsetLeft - el.scrollLeft;
+        _y += el.offsetTop - el.scrollTop;
+        el = el.offsetParent;
+      }
+      return { top: _y, left: _x };
+    },
     dragover(data, evn) {
       this.design.dragOver = this;
       evn.stopPropagation();
+      let minH, min = null, y = evn.y - 20, x = evn.x;
+      this.design.dragY = y;
+      this.design.dropZonePositions.forEach(rect => {
+        // todo: calcula minima distancia entre rectangulos
+        const h = (rect.y - y) * (rect.y - y) + (rect.x - x) * (rect.x - x);
+        if (!min || h < minH) {
+          minH = h;
+          min = rect;
+        }
+      });
+      if (min) {
+        //console.log(minH, min.zone);
+        setNearZone(this.design, min);
+      }
     },
     dragleave(data, evn) {
       this.design.dragOver = null;
@@ -82,12 +122,30 @@ export default {
       component.dropMe(this.node, this.zone, this.slotName);
     },
   },
+  mounted() {
+    this.$el.addEventListener('click', (event) => {
+      const owner = this.builder.getOwnerNode(event.target);
+      this.design.selectedNode = this.builder.getNode(owner.getAttribute('builder-id'));
+      event.stopPropagation();
+    });
+  },
 }
 </script>
 
 <style>
 .drop-zone {
-  opacity: 0.5;
+  opacity: 0.3;
+}
+.drop-zone.notNear > * {
+  height: 4px;
+  max-height: 4px;
+  opacity: 0;
+  overflow: hidden;
+  margin: 0px;
+  padding: 0px;
+}
+.drop-zone.isNear > * {
+  border: 1px solid red;
 }
 .drop-zone.isHovered {
   animation-name: fadeIn;

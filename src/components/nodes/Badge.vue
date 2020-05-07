@@ -10,7 +10,7 @@ export default {
       name: "Badge",
       icon: "tag",
       template: `<b-badge variant="primary">Primary</b-badge>`,
-      preview: `<b-badge variant="primary">Primary</b-badge>`,
+      preview: `<span class="badge badge-primary">Primary</span>`,
       props: {
         variant: {
           type: String,

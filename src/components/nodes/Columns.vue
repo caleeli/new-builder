@@ -5,11 +5,11 @@ export default {
   extends: BaseNode,
   data() {
     return {
-      tag: "B-CARD",
-      icon: "address-card",
-      name: "Card",
-      template: `<b-card :title='"Card Title"'></b-card>`,
-      preview: `<div class="card"><div class="card-body"><h4 class="card-title">Card Title</h4>Content...</div></div>`,
+      tag: "B-COLUMNS",
+      icon: "columns",
+      name: "Columns",
+      template: `<b-columns></b-columns>`,
+      preview: `<div class="d-flex w-100"><div>Column</div><div>Column</div></div>`,
       props: {
         title: {
           type: String,
@@ -21,9 +21,7 @@ export default {
         },
       },
       slots: [
-        'header',
         'default',
-        //'footer'
       ]
     };
   }

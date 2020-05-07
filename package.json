@@ -14,6 +14,7 @@
     "bootstrap": "^4.4.1",
     "bootstrap-vue": "^2.4.0",
     "core-js": "^3.6.4",
+    "debounce": "^1.2.0",
     "jquery": "^3.4.0",
     "uuid": "^3.4.0",
     "vue": "^2.6.11",

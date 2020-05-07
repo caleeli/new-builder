@@ -42,5 +42,13 @@ export default {
     dropAfter(child, node) {
       node.parentNode.insertBefore(child, node.nextSibling);
     },
+    startDrag(preview, node) {
+      this.design.setDragContent(preview);
+      this.design.draggedNode = node;
+      this.design.nearZone = null;
+      this.$nextTick(() => {
+        this.design.calculateDropZonePositions();
+      });
+    },
   },
 }

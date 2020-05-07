@@ -1,5 +1,10 @@
 <template>
-  <b-card bg-variant="light" :header="`Design`" class="rounded-0" header-class="p-0 text-center">
+  <b-card bg-variant="light" :header="`Design`" class="rounded-0" header-class="p-0 text-center" @mousemove="mousemove">
+    <svg v-if="false" style="width:1em;height:100%;position:absolute;left:-5px;top:-20px;">
+      <line v-for="(rect,idx) in dropZonePositions" :key="`line-${idx}`"
+        x1="0" x2="10" :y1="rect.y" :y2="rect.y" style="stroke:rgb(255,0,0);stroke-width:2" />
+      <line x1="0" x2="10" :y1="dragY" :y2="dragY" style="stroke:rgb(0,255,0);stroke-width:2" />
+    </svg>
     <drop-zone :node="node" zone="inside" :design="self" :builder="builder">
       <component :is="component()" :design="self" :builder="builder"></component>
     </drop-zone>
@@ -29,12 +34,48 @@ export default {
   data() {
     return {
       self: this,
+      selectedNode: null,
       dragContent: null,
       dragOver: null,
       draggedNode: null,
+      nearZone: null,
+      dropZonePositions: [],
+      dragY: 0,
     };
   },
   methods: {
+    calculateDropZonePositions() {
+      this.dropZonePositions.splice(0);
+      this.$el.getElementsByClassName('drop-zone').forEach(el => {
+        const rect = el.getBoundingClientRect();
+        let component = el.parentNode.__vue__;
+        while(component && component.$options._componentTag !== 'drop-zone') {
+          component = component.$parent;
+        }
+        if (component && component.$options._componentTag === 'drop-zone') {
+          this.dropZonePositions.push({
+            x: rect.x,
+            y: rect.y,
+            target: el,
+            zone: component,
+            id: component.getId(),
+            tag: component && component.$vnode.tag,
+          });
+        }
+      });
+    },
+    mousemove(event) {
+      let minH, min = null;
+      this.$el.getElementsByClassName('drop-zone').forEach(el => {
+        const rect = el.getBoundingClientRect();
+        const h = (rect.x - event.x) * (rect.x - event.x) + (rect.y - event.y) * (rect.y - event.y);
+        if (!min || h < minH) {
+          minH = h;
+          min = el;
+        }
+      });
+      //console.log(min, minH, {x: event.x, y: event.y});
+    },
     getDragContent() {
       return this.dragContent;
     },
@@ -185,6 +226,11 @@ export default {
     slotZone(node, slotName) {
       const slot = slotName === 'default' ? node : this.getOrCreateSlot(node, slotName);
       this.appendChild(slot, this.dropZone(node, 'inside', slotName));
+    },
+  },
+  watch: {
+    selectedNode(selectedNode) {
+      this.$emit('node-selected', selectedNode);
     },
   },
 }

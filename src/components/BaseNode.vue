@@ -50,7 +50,7 @@ export default {
       this.design.setDropNodeId(null);
     },
     dragstart() {
-      this.design.setDragContent(this.getPreview());
+      this.startDrag(this.getPreview(), null);
     },
     dropMe(node, zone, slot) {
       const child = this.createNewNodeInstance(node);
