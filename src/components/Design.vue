@@ -112,6 +112,26 @@ export default {
           },
           data() {
             return variables;
+          },
+          schema: {
+            type: 'object',
+            properties: {
+              name: {
+                type: 'string',
+                pattern: '^\\w+\\s\\w+$'
+              },
+              firstname: {
+                type: 'string',
+                minLength: 5
+              },
+              age: {
+                type: 'integer',
+                default: 20,
+                minimum: 18,
+                maximum: 30
+              }
+            },
+            required: ['firstname']
           }
         };
         component.template = this.template();
