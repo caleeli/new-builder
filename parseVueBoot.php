@@ -1,8 +1,9 @@
 <?php
-$component = 'card';
+$component = 'form-input';
+$file = str_replace(' ','', ucwords(str_replace('-', ' ', $component)));
 
 $url = "https://bootstrap-vue.org/docs/components/${component}";
-$path = "src/components/nodes/" . ucfirst($component) . ".vue";
+$path = "src/components/nodes/" . $file . ".vue";
 
 $dom = new DOMDocument();
 @$dom->loadHTMLFile($url);
@@ -13,11 +14,17 @@ $lines = $xpath->query('//section[contains(.,"<b-' . $component . '>")]/article/
 $props = [];
 foreach($lines as $line) {
   $columns = $line->getElementsByTagName('td');
-  $name = $columns[0]->textContent;
+  $name = $columns[0]->getElementsByTagName('code')->item(0)->textContent;
   $name = trim(str_replace('Use with caution', '', $name));
   $type = trim($columns[1]->textContent);
   $description = $columns[3]->textContent;
   if ($type === 'String or Object or Array') {
+    $type = 'String';
+  }
+  if ($type === 'Boolean or String') {
+    $type = 'String';
+  }
+  if ($type === 'Number or String') {
     $type = 'String';
   }
   $props[$name] = [
@@ -31,6 +38,14 @@ foreach($lines as $line) {
   if ($name === 'align') {
     $props[$name]['component'] = 'Align';
   }
+}
+
+$hasVModel = $xpath->query('//section[contains(.,"<b-' . $component . '>")]/article/h4[span[contains(., "v-model")]]');
+
+if(count($hasVModel)) {
+  $props['v-model'] = $props['value'];
+  $props['v-model']['component'] = 'Variable';
+  unset($props['value']);
 }
 
 ksort($props);
