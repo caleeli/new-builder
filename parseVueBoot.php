@@ -25,11 +25,11 @@ foreach($lines as $line) {
     'label' => $name,
     'description' => $description,
   ];
-  if (substr($name, -8) === '-variant') {
+  if ($name=== 'variant' || substr($name, -8) === '-variant') {
     $props[$name]['component'] = 'Variant';
   }
   if ($name === 'align') {
-    $props[$name]['autocomplete'] = ['left', 'center', 'rigth'];
+    $props[$name]['component'] = 'Align';
   }
 }
 

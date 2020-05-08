@@ -15,11 +15,7 @@ export default {
           "type": String,
           "label": "align",
           "description": "Text alignment for the card's content: 'left', 'center' or 'right'",
-          "autocomplete": [
-            "left",
-            "center",
-            "rigth"
-          ]
+          "component": "Align"
         },
         "bg-variant": {
           "type": String,
