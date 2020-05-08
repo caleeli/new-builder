@@ -43,7 +43,7 @@ export default {
   },
   computed: {
     properties() {
-      const properties = [];
+      let properties = [];
       if (this.selected) {
         const definition = this.builder.getDefinitionOf(this.selected);
         if (!definition) {
@@ -54,7 +54,7 @@ export default {
             }
           ];
         }
-        return Object.keys(definition.props).map(name => {
+        properties = Object.keys(definition.props).map(name => {
           const def = definition.props[name];
           return {
             name,
@@ -63,6 +63,15 @@ export default {
             ...def
           };
         });
+        if (definition.content) {
+          properties.unshift({
+            name: '#content',
+            label: '#content',
+            component: 'Content',
+            ...definition.content
+          });
+        }
+        return properties;
       }
       return properties;
     }

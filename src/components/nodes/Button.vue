@@ -123,6 +123,10 @@ export default {
           "component": "Variant"
         }
       },
+      content: {
+        label: 'Label',
+        description: 'Label of the button. Can include mustache content like {{ variable }}',
+      },
       slots: []
     };
   }
