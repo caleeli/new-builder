@@ -16,13 +16,12 @@
 import Components from "./Components";
 import Design from "./Design";
 import Inspector from "./Inspector";
-//import { v4 as uuid } from "uuid";
 
 export default {
   components: { Components, Design, Inspector },
   data() {
     const node = window.document.createElement("div");
-    node.innerHTML = "hello world";
+    node.innerHTML = "";
     return {
       variables: [{name:'text', value: 'text'}],
       node,
@@ -93,8 +92,10 @@ export default {
 }
 .p-components {
   min-width: 15%;
+  max-width: 25%;
 }
 .p-inspector {
   min-width: 25%;
+  max-width: 30%;
 }
 </style>

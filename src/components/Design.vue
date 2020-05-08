@@ -1,5 +1,5 @@
 <template>
-  <b-card bg-variant="light" :header="`Design`" class="rounded-0" header-class="p-0 text-center" @mousemove="mousemove">
+  <b-card bg-variant="light" header="Design" class="rounded-0" header-class="p-0 text-center" body-class="design-body" @mousemove="mousemove">
     <svg v-if="false" style="width:1em;height:100%;position:absolute;left:-5px;top:-20px;">
       <line v-for="(rect,idx) in dropZonePositions" :key="`line-${idx}`"
         x1="0" x2="10" :y1="rect.y" :y2="rect.y" style="stroke:rgb(255,0,0);stroke-width:2" />
@@ -237,5 +237,7 @@ export default {
 </script>
 
 <style>
-
+.design-body {
+  overflow-y: auto;
+}
 </style>

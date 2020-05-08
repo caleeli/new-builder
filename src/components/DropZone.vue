@@ -11,11 +11,10 @@
 
 <script>
 import NodeTools from '../mixins/NodeTools';
-import debounce from 'debounce';
 
-const setNearZone = debounce((design, zone) => {
+const setNearZone = (design, zone) => {
   design.nearZone = zone;
-}, 13);
+};
 export default {
   mixins: [ NodeTools ],
   props: {

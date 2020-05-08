@@ -1,5 +1,5 @@
 <template>
-  <b-card bg-variant="light" header="Inspector" body-class="p-0" class="rounded-0" header-class="p-0 text-center">
+  <b-card bg-variant="light" header="Inspector" body-class="p-0 inspector-body" class="rounded-0" header-class="p-0 text-center">
     <component
       v-for="property in properties"
       :is="property.component"
@@ -71,4 +71,7 @@ export default {
 </script>
 
 <style>
+.inspector-body {
+  overflow-y: auto;
+}
 </style>
