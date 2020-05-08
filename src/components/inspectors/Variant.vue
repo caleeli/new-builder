@@ -33,7 +33,7 @@ export default {
     autocomplete: {
       type: Array,
       default() {
-        return ["success", "primary", "danger", "warning", "info"];
+        return ["primary", "danger", "warning", "success", "info", "secondary"];
       }
     },
   },

@@ -1,5 +1,5 @@
 <?php
-$component = 'form-input';
+$component = 'button';
 $file = str_replace(' ','', ucwords(str_replace('-', ' ', $component)));
 
 $url = "https://bootstrap-vue.org/docs/components/${component}";
