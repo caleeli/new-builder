@@ -17,7 +17,7 @@
         :key="`variant-${variant}`"
         :icon="local === variant ? 'check-circle' : 'circle'"
         :class="`text-${variant} mt-2 mr-1`"
-        @click="local=variant"
+        @click="local=local===variant ? '' : variant"
       />
       <b-button variant="outline-info" size="sm" @click="switchComputed">ƒ()</b-button>
     </b-input-group>
@@ -36,19 +36,6 @@ export default {
         return ["success", "primary", "danger", "warning", "info"];
       }
     },
-  },
-  computed: {
-    data() {
-      return (
-        (this.autocomplete instanceof Function
-          ? this.autocomplete({
-              property: this,
-              inspector: this.owner,
-              builder: this.owner.builder
-            })
-          : this.autocomplete) || []
-      );
-    }
   },
 };
 </script>
