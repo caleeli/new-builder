@@ -234,7 +234,7 @@ export default {
       slots: [
         'header',
         'default',
-        //'footer'
+        'footer',
       ]
     };
   }
