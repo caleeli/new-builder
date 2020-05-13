@@ -31,7 +31,7 @@ library.add(fas);
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 
 // Install validations
-Vue.use(VueVuelidateJsonschema)
+Vue.use(VueVuelidateJsonschema);
 Vue.use(Vuelidate);
 
 // Install VeeValidate rules and localization

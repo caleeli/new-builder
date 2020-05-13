@@ -1,11 +1,6 @@
 <template>
   <b-card bg-variant="light" header="Design" class="rounded-0" header-class="p-0 text-center" body-class="design-body" @mousemove="mousemove">
-    <svg v-if="false" style="width:1em;height:100%;position:absolute;left:-5px;top:-20px;">
-      <line v-for="(rect,idx) in dropZonePositions" :key="`line-${idx}`"
-        x1="0" x2="10" :y1="rect.y" :y2="rect.y" style="stroke:rgb(255,0,0);stroke-width:2" />
-      <line x1="0" x2="10" :y1="dragY" :y2="dragY" style="stroke:rgb(0,255,0);stroke-width:2" />
-    </svg>
-    <drop-zone :node="node" zone="inside" :design="self" :builder="builder">
+    <drop-zone :node="node" zone="inside" :design="self" :builder="builder" class="w-100 h-100">
       <component :is="component()" :design="self" :builder="builder"></component>
     </drop-zone>
   </b-card>
@@ -54,8 +49,8 @@ export default {
         }
         if (component && component.$options._componentTag === 'drop-zone') {
           this.dropZonePositions.push({
-            x: rect.x,
-            y: rect.y,
+            x: rect.x + rect.width / 2,
+            y: rect.y + rect.height / 2,
             target: el,
             zone: component,
             id: component.getId(),

@@ -12,9 +12,6 @@
 <script>
 import NodeTools from '../mixins/NodeTools';
 
-const setNearZone = (design, zone) => {
-  design.nearZone = zone;
-};
 export default {
   mixins: [ NodeTools ],
   props: {
@@ -91,10 +88,9 @@ export default {
     dragover(data, evn) {
       this.design.dragOver = this;
       evn.stopPropagation();
-      let minH, min = null, y = evn.y - 20, x = evn.x;
+      let minH, min = null, y = evn.y - 20 + this.design.$el.childNodes[2].scrollTop, x = evn.x;
       this.design.dragY = y;
       this.design.dropZonePositions.forEach(rect => {
-        // todo: calcula minima distancia entre rectangulos
         const h = (rect.y - y) * (rect.y - y) + (rect.x - x) * (rect.x - x);
         if (!min || h < minH) {
           minH = h;
@@ -102,8 +98,7 @@ export default {
         }
       });
       if (min) {
-        //console.log(minH, min.zone);
-        setNearZone(this.design, min);
+        this.design.nearZone = min;
       }
     },
     dragleave(data, evn) {
